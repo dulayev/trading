@@ -36,6 +36,9 @@ class LeastSquares:
         self.sum_x2 += w * x * x
         self.sum_xy += w * x * y
 
+    def RemovePoint(self, point):
+        LeastSquares.AppendPoint(self, (point[0], point[1], -point[2]))
+
     @staticmethod
     def ComputeFor(points):
         least_squares = LeastSquares()
@@ -95,7 +98,13 @@ def TestLeastSquares():
     assert len(data) != len(data2)
     assert LeastSquares.ComputeFor(data) == LeastSquares.ComputeFor(data2)
 
-
+    least_squares = LeastSquares()
+    least_squares.LoadPoints(data)
+    extra_point = [22, 10, 5]
+    least_squares.AppendPoint(extra_point)
+    assert least_squares.Compute() == LeastSquares.ComputeFor(data + [extra_point])
+    least_squares.RemovePoint(extra_point)
+    assert least_squares.Compute() == LeastSquares.ComputeFor(data)
     
 TestLeastSquares()
 
