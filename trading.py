@@ -36,6 +36,12 @@ class LeastSquares:
         self.sum_x2 += w * x * x
         self.sum_xy += w * x * y
 
+    @staticmethod
+    def ComputeFor(points):
+        least_squares = LeastSquares()
+        least_squares.LoadPoints(points)
+        return least_squares.Compute()
+
 # reads file and returns tuples array
 def ReadFile(name):
     res = []
@@ -69,19 +75,15 @@ def TestLeastSquares():
     gold_b = 8.0
     count = 10
     data = [[x, gold_a * x + gold_b, 1] for x in range(count)]
-    least_squares = LeastSquares()
-    least_squares.LoadPoints(data)
-    assert least_squares.Compute() == (gold_a, gold_b) # correct for indeed linear sequence with weight == 1
+    assert LeastSquares.ComputeFor(data) == (gold_a, gold_b) # correct for indeed linear sequence with weight == 1
     data1 = [(p[0], p[1], 10) for p in data]
-    least_squares.LoadPoints(data1)
-    assert least_squares.Compute() == (gold_a, gold_b) # the same for another constant weight
+    assert LeastSquares.ComputeFor(data1) == (gold_a, gold_b) # the same for another constant weight
     deltas = cycle((2, -2))
     for i in range(0, count // 4 * 2): # even number <= count / 2
         delta = next(deltas)
         data[i][1] += delta # add +/- 2 from beginning
         data[-1-i][1] += delta # add +/- 2 from the end
-    least_squares.LoadPoints(data)
-    assert least_squares.Compute() == (gold_a, gold_b)
+    assert LeastSquares.ComputeFor(data) == (gold_a, gold_b)
 
     data2 = copy.deepcopy(data)
     weight = 20
@@ -90,11 +92,10 @@ def TestLeastSquares():
     for i in range(1, weight):
         data.append(data[0]) # duplicate 1st item (weight - 1) times
 
-    least_squares.LoadPoints(data)
-    least_squares2 = LeastSquares()
-    least_squares2.LoadPoints(data2)
     assert len(data) != len(data2)
-    assert least_squares.Compute() == least_squares2.Compute()
+    assert LeastSquares.ComputeFor(data) == LeastSquares.ComputeFor(data2)
+
+
     
 TestLeastSquares()
 
