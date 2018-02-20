@@ -10,7 +10,6 @@ class LeastSquares:
         self.sum_w = 0.0
         self.sum_xy = 0.0
         self.sum_x2 = 0.0
-        self.n = len(points)
         for point in points:
             x = point[0]
             y = point[1]
@@ -26,6 +25,16 @@ class LeastSquares:
             (self.sum_w * self.sum_x2 - self.sum_x * self.sum_x)
         b = (self.sum_y - a * self.sum_x) / self.sum_w
         return (a, b)
+
+    def AppendPoint(self, point):
+        x = point[0]
+        y = point[1]
+        w = point[2] # weight
+        self.sum_x += w * x
+        self.sum_y += w * y 
+        self.sum_w += w
+        self.sum_x2 += w * x * x
+        self.sum_xy += w * x * y
 
 # reads file and returns tuples array
 def ReadFile(name):
