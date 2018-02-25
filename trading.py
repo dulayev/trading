@@ -105,6 +105,52 @@ def TestLeastSquares():
     assert least_squares.Compute() == LeastSquares.ComputeFor(data + [extra_point])
     least_squares.RemovePoint(extra_point)
     assert least_squares.Compute() == LeastSquares.ComputeFor(data)
+
+def Variance(linear_model, points, part):
+
+    def Delta(point):
+        x = point[0]
+        real_y = point[1]
+        linear_y = linear_model[0] * x + linear_model[1]
+        return abs(real_y - linear_y)
+
+    delta_points = [(p, Delta(p)) for p in points]
+    
+    delta_points.sort(key = lambda dp : dp[1], reverse = True)
+
+    total_weight = sum(p[2] for p in points)
+    goal_weight = total_weight * part
+
+    delta = 0.0
+    current = total_weight
+    for p in delta_points:
+        current -= p[0][2]
+        if current < goal_weight:
+            delta = p[1]
+            break
+    return delta
+
+def TestVariance():
+    a = 2.0
+    b = 5.0
+    count = 20
+    data = [[x, a * x + b, 1] for x in range(count)]
+    linear_model = (a, b)
+    assert Variance(linear_model, data, 1.0) == 0.0
+    assert Variance(linear_model, data, 0.5) == 0.0
+    assert Variance(linear_model, data, 0.0) == 0.0
+    
+    data.append([0, 0, 20])
+    assert Variance(linear_model, data, 0.4) == 0.0
+    assert Variance(linear_model, data, 0.5) == 0.0
+    assert Variance(linear_model, data, 0.51) == 5.0
+    assert Variance(linear_model, data, 1.0) == 5.0
+                  
+    data.insert(0, [0, 20, 10])
+    assert Variance(linear_model, data, 0.3) == 0.0
+    assert Variance(linear_model, data, 0.6) == 5.0
+    assert Variance(linear_model, data, 0.9) == 15.0
+
     
 TestLeastSquares()
-
+TestVariance()
