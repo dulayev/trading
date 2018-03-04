@@ -1,6 +1,7 @@
 from datetime import datetime
 from itertools import cycle
 import copy
+import collections
 
 class LeastSquares:
 
@@ -69,9 +70,6 @@ def ReadFile(name):
             else:
                 header = False
     return res
-
-# data = ReadFile("/home/dulayev/Documents/BRF8 [Price].txt")
-# print(len(data))         
 
 def TestLeastSquares():
     gold_a = 3.0
@@ -151,6 +149,31 @@ def TestVariance():
     assert Variance(linear_model, data, 0.6) == 5.0
     assert Variance(linear_model, data, 0.9) == 15.0
 
+Stats = collections.namedtuple("Stats", ["count", "volume", "gain"])
+Strategy = collections.namedtuple("Strategy", ["trend_len", "enter", "fix", "drop"])
+
+def Simulate(points, strategy):
+    stats = Stats(count = 0, volume = 0.0, gain = 0.0)
+
+    balance = 0
+    # find first portion
+    modeled = []
+
+#    for point in points:
+#        modeled[]        
+
+    
+    return stats
     
 TestLeastSquares()
 TestVariance()
+
+data = ReadFile("/home/dulayev/Documents/BRF8 [Price].txt")
+print(len(data))         
+print(data[0])
+
+trend_len = 7 * 24 * 3600 # seconds in week
+strategy = Strategy(trend_len, enter = 0.8, fix = 0.8, drop = 0.8)
+
+stats = Simulate(data, strategy)
+print(stats)
