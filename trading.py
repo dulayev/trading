@@ -208,17 +208,16 @@ def Simulate(points, strategy):
             continue
         else:
             trend = least_squares.Compute()
-            print("trend")
-            print(trend)
             if stats.leftover == 0:
                 # look for enter
                 if not OvertakeTrend(trend, point):
-                    delta = Variance(trend_points, strategy.enter)
+                    delta = Variance(trend, trend_points, strategy.enter)
 
                     if ExceedDelta(trend, delta, point):
-                        stats.deal_count += 1
-                        stats.leftover += max_count
-                        stats.volume += max_count * point[1]
+                        stats = stats._replace(
+                            deal_count = stats.deal_count + 1,
+                            leftover = stats.leftover + strategy.max_count,
+                            volume = stats.volume + strategy.max_count * point[1])
 
     return stats
 
@@ -227,11 +226,10 @@ def TestSimulate():
     b = 5.0
     count = 20
     data = [[x, a * x + b, 1] for x in range(count)]
-    data.insert(10, (10, 0, 1))
+    data.insert(11, (10.5, 1, 1))
     strategy = Strategy(trend_len = 10, enter = 0.8, fix = 0.8, drop = 1.0, max_count = 1)
 
     stats = Simulate(data, strategy)
-    print(stats)
     assert stats == Stats(deal_count = 1, volume = 1.0, gain = 0.0, leftover = 1)
     
 TestLeastSquares()
@@ -240,9 +238,9 @@ TestOvertakeTrend()
 TestExceedDelta()
 TestSimulate()
 
-data = ReadFile("/home/dulayev/Documents/BRF8 [Price].txt")
-print(len(data))         
-print(data[0])
+#data = ReadFile("/home/dulayev/Documents/BRF8 [Price].txt")
+#print(len(data))         
+#print(data[0])
 
 
 
