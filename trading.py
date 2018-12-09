@@ -56,7 +56,6 @@ def ReadFile(name):
         for line in f:
             if not header:
                 parts = line.split(',')
-                print(parts[2] + parts[3])
                 dt = datetime.strptime(parts[2] + parts[3], "%Y%m%d%H%M%S")
                 seconds = (dt - epoch).total_seconds()
                 price = 0.0
@@ -64,10 +63,7 @@ def ReadFile(name):
                     price += float(parts[i])
                 price /= 4
                 volume = float(parts[8])
-                print((seconds, price, volume))
                 res.append((seconds, price, volume))
-                if len(res) > 10:
-                    break
             else:
                 header = False
     return res
@@ -238,14 +234,14 @@ TestOvertakeTrend()
 TestExceedDelta()
 TestSimulate()
 
-#data = ReadFile("/home/dulayev/Documents/BRF8 [Price].txt")
-#print(len(data))         
-#print(data[0])
+data = ReadFile("/home/dulayev/Documents/SPFB.BR-1.19_181001_181210.txt")
+print(len(data))
+print(data[0])
 
 
 
 trend_len = 7 * 24 * 3600 # seconds in week
 strategy = Strategy(trend_len, enter = 0.8, fix = 0.8, drop = 0.8, max_count = 1)
 
-#stats = Simulate(data, strategy)
-#print(stats)
+stats = Simulate(data, strategy)
+print(stats)
